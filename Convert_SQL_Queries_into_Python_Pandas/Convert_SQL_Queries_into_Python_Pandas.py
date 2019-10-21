@@ -159,26 +159,26 @@ customers.groupby('Age').filter(lambda x: len(x) < 3).groupby('Age').size()
 
 # ### IN
 
-# In[48]:
+# In[87]:
 
 
 #SQL Statement (Filter records based on values which are available in the given list )
-'''SELECT * FROM customers WHERE Age IN (10, 20, 30)'''
+'''SELECT * FROM customers WHERE Age IN (20, 30, 40)'''
 
 #Pandas Equivalant
-customers[customers.Age.isin([10,20,30])]
+customers[customers.Age.isin([20,30,40])]
 
 
 # ### NOT IN
 
-# In[49]:
+# In[90]:
 
 
 #SQL Statement (Filter records based on values which are NOT available in the given list)
-'''SELECT * FROM customers WHERE Age NOT IN (10, 20, 30)'''
+'''SELECT * FROM customers WHERE Age NOT IN (20, 30, 40)'''
 
 #Pandas Equivalant
-customers[~customers.Age.isin([10,20,30])]
+customers[~customers.Age.isin([20,30,40])]
 
 
 # ### Top N Observations
@@ -205,6 +205,22 @@ customers.nlargest(10, columns='Spending_Score_1_to_100')
 customers.nlargest(20, columns='Spending_Score_1_to_100').tail(10)
 
 
+# ### UNION ALL AND UNION
+
+# In[29]:
+
+
+shop_customers = pd.read_csv('Shop_Customers.csv')
+
+#SQL Statement (Union two Tables)
+'''SELECT * FROM customers WHERE Annual_Income_K_Dollars > 50 UNION ALL SELECT * FROM shop_customers Annual_Income_K_Dollars < 45 '''
+
+#Pandas Equivalant
+pd.concat([customers[customers.Annual_Income_K_Dollars > 50], shop_customers[shop_customers.Annual_Income_K_Dollars < 45]])
+
+#If wants to mimic UNION operation then just (append) chain the entire operation with drop_duplicates() method
+
+
 # ### JOIN
 
 # In[13]:
@@ -217,22 +233,6 @@ transactions = pd.read_csv('Mall_Customers_Transactions.csv')
 
 #Pandas Equivalant
 customers.merge(transactions[customers.Genre == 'Female'], left_on='CustomerID', right_on='CustID', how='inner')
-
-
-# ### UNION ALL
-
-# In[29]:
-
-
-shop_customers = pd.read_csv('Shop_Customers.csv')
-
-#SQL Statement (Union two Tables)
-'''SELECT * FROM customers WHERE Annual_Income_K_Dollars > 50 UNION ALL SELECT * FROM shop_customers < 45 '''
-
-#Pandas Equivalant
-pd.concat([customers[customers.Annual_Income_K_Dollars > 50], shop_customers[shop_customers.Annual_Income_K_Dollars < 45]])
-
-#If wants to mimic UNION operation then just (append) chain the entire operation with drop_duplicates() method
 
 
 # ### INSERT
@@ -250,7 +250,7 @@ customers
 
 # ### UPDATE
 
-# In[78]:
+# In[98]:
 
 
 #SQL Statement (Update an existing record in the table)
@@ -260,25 +260,25 @@ customers
 customers.loc[customers['Spending_Score_1_to_100'] == 6, 'Spending_Score_1_to_100'] = 7
 
 
-# In[83]:
+# In[105]:
 
 
-customers = pd.read_csv('Mall_Customers.csv')
+#customers = pd.read_csv('Mall_Customers.csv')
 
 #Currently two records with Spending_Score_1_to_100 == 6
-customers[(customers.Spending_Score_1_to_100 == 6)]
+customers[(customers.Spending_Score_1_to_100 == 7)]
 
 
 # ### DELETE
 
-# In[84]:
+# In[104]:
 
 
 #SQL Statement (Delete an existing record in the table)
-'''DELETE FROM customers SET WHERE Spending_Score_1_to_100 = 7'''
+'''DELETE FROM customers WHERE Spending_Score_1_to_100 = 7'''
 
 #Pandas Equivalant
-customers.drop(customers[customers.Spending_Score_1_to_100 == 6].index)
+customers = customers.drop(customers[customers.Spending_Score_1_to_100 == 7].index)
 
 
 # In[ ]:
